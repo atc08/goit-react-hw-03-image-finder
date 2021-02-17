@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import imagesApi from './services/images-api';
+import { ToastContainer } from 'react-toastify';
+import { fetchImagesApi } from './services/images-api';
 // import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar';
+import ImageGallery from './components/ImageGallery';
 
 class App extends Component {
   state = {
@@ -27,8 +29,7 @@ class App extends Component {
 
     this.setState({ isLoading: true });
 
-    imagesApi
-      .fetchImages(options)
+    fetchImagesApi(options)
       .then(hits => {
         this.setState(prevState => ({
           images: [...prevState.images, ...hits],
@@ -47,19 +48,8 @@ class App extends Component {
 
         {isLoading && <h1>Loading...</h1>}
 
-        <ul>
-          {images.map(({ id, webformatURL, tags, largeImageURL }) => (
-            <li key={id}>
-              <img
-                // className={s.ImageGalleryItemImage}
-                src={webformatURL}
-                alt={tags}
-                data-url={largeImageURL}
-                width="300"
-              />
-            </li>
-          ))}
-        </ul>
+        <ImageGallery images={images} />
+
         {images.length > 0 && (
           <button type="button" onClick={this.fetchImages}>
             Load More
@@ -70,6 +60,7 @@ class App extends Component {
             Load More
           </button>
         )} */}
+        <ToastContainer autoClose={3000} />
       </div>
     );
   }

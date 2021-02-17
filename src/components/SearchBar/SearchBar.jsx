@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import s from './SearchBar.module.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class SearchBar extends Component {
   state = {
@@ -7,14 +9,18 @@ class SearchBar extends Component {
   };
 
   handleChange = e => {
-    this.setState({ query: e.target.value });
+    this.setState({ query: e.target.value.toLowerCase() });
   };
 
   handleSubmit = e => {
     e.preventDefault();
 
-    this.props.onChange(this.state.query);
+    if (this.state.query.trim() === '') {
+      toast.warn('Enter your query');
+      return;
+    }
 
+    this.props.onChange(this.state.query);
     this.setState({ query: '' });
   };
 
@@ -30,6 +36,7 @@ class SearchBar extends Component {
           <input
             className={s.SearchFormInput}
             type="text"
+            name="query"
             value={query}
             autoComplete="off"
             autoFocus
