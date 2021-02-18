@@ -17,8 +17,15 @@ class SearchBar extends Component {
 
     if (this.state.query.trim() === '') {
       toast.warn('Enter your query');
+      this.setState({ query: '' });
       return;
     }
+
+    // if (this.props.images.length === 0) {
+    //   toast.warn('No images with such query');
+    //   this.setState({ query: '' });
+    //   return;
+    // }
 
     this.props.onChange(this.state.query);
     this.setState({ query: '' });

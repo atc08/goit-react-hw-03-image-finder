@@ -4,6 +4,7 @@ import { fetchImagesApi } from './services/images-api';
 // import PropTypes from 'prop-types';
 import SearchBar from './components/SearchBar';
 import ImageGallery from './components/ImageGallery';
+import LoadMoreButton from './components/LoadMoreButton';
 
 class App extends Component {
   state = {
@@ -39,22 +40,35 @@ class App extends Component {
       .finally(() => this.setState({ isLoading: false }));
   };
 
+  // handleScroll = e => {
+  //   if (e.target.className === 'LoadMoreButton') {
+  //     window.scrollTo({
+  //       top: document.documentElement.scrollHeight,
+  //       behavior: 'smooth',
+  //     });
+  //     console.log('xzbgfhjxng');
+  //   }
+  // };
+
   render() {
     const { images, isLoading } = this.state;
 
     return (
       <div className="App">
-        <SearchBar onChange={this.onChangeQuery} />
-
+        <SearchBar onChange={this.onChangeQuery} images={images} />
         {isLoading && <h1>Loading...</h1>}
-
         <ImageGallery images={images} />
-
         {images.length > 0 && (
+          <LoadMoreButton
+            onClick={this.fetchImages}
+            onScroll={this.handleScroll}
+          />
+        )}
+        {/* {images.length > 0 && (
           <button type="button" onClick={this.fetchImages}>
             Load More
           </button>
-        )}
+        )} */}
         {/* {images.length > 0 && !isLoading && (
           <button type="button" onClick={this.fetchImages}>
             Load More
