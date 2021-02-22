@@ -5,6 +5,7 @@ import { fetchImagesApi } from './services/images-api';
 import SearchBar from './components/SearchBar';
 import ImageGallery from './components/ImageGallery';
 import LoadMoreButton from './components/LoadMoreButton';
+import Loader from './components/Loader';
 
 class App extends Component {
   state = {
@@ -12,6 +13,7 @@ class App extends Component {
     page: 1,
     searchQuery: '',
     isLoading: false,
+    error: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -25,8 +27,8 @@ class App extends Component {
   };
 
   fetchImages = () => {
-    const { page, searchQuery } = this.state;
-    const options = { page, searchQuery };
+    const { page, searchQuery, error } = this.state;
+    const options = { page, searchQuery, error };
 
     this.setState({ isLoading: true });
 
@@ -36,44 +38,26 @@ class App extends Component {
           images: [...prevState.images, ...hits],
           page: prevState.page + 1,
         }));
+
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
       })
       .finally(() => this.setState({ isLoading: false }));
   };
 
-  // handleScroll = e => {
-  //   if (e.target.className === 'LoadMoreButton') {
-  //     window.scrollTo({
-  //       top: document.documentElement.scrollHeight,
-  //       behavior: 'smooth',
-  //     });
-  //     console.log('xzbgfhjxng');
-  //   }
-  // };
-
   render() {
-    const { images, isLoading } = this.state;
+    const { images, isLoading, searchQuery } = this.state;
 
     return (
       <div className="App">
         <SearchBar onChange={this.onChangeQuery} images={images} />
-        {isLoading && <h1>Loading...</h1>}
         <ImageGallery images={images} />
-        {images.length > 0 && (
-          <LoadMoreButton
-            onClick={this.fetchImages}
-            onScroll={this.handleScroll}
-          />
+        {isLoading && <Loader searchQuery={searchQuery} />}
+        {images.length > 0 && !isLoading && (
+          <LoadMoreButton onClick={this.fetchImages} />
         )}
-        {/* {images.length > 0 && (
-          <button type="button" onClick={this.fetchImages}>
-            Load More
-          </button>
-        )} */}
-        {/* {images.length > 0 && !isLoading && (
-          <button type="button" onClick={this.fetchImages}>
-            Load More
-          </button>
-        )} */}
         <ToastContainer autoClose={3000} />
       </div>
     );

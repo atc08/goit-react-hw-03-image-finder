@@ -1,20 +1,9 @@
 import React from 'react';
 import s from './LoadMoreButton.module.css';
 
-const LoadMoreButton = ({ onClick, onScroll }) => {
+const LoadMoreButton = ({ onClick }) => {
   return (
-    // scroll = () => {
-    //   window.scrollTo({
-    //     top: document.documentElement.scrollHeight,
-    //     behavior: 'smooth',
-    //   });
-    // },
-    <button
-      type="button"
-      className={s.LoadMoreButton}
-      onClick={onClick}
-      onScroll={e => onScroll(e)}
-    >
+    <button type="button" className={s.LoadMoreButton} onClick={onClick}>
       Load More
     </button>
   );
