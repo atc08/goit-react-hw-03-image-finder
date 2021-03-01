@@ -8,6 +8,10 @@ class SearchBar extends Component {
     query: '',
   };
 
+  handleGreeting = () => {
+    toast.warn('You are welcome) Please enter your query');
+  };
+
   handleChange = e => {
     this.setState({ query: e.target.value.toLowerCase() });
   };
@@ -17,15 +21,16 @@ class SearchBar extends Component {
 
     if (this.state.query.trim() === '') {
       toast.warn('Enter your query');
+      console.log(this.props.total);
       this.setState({ query: '' });
       return;
     }
 
-    // if (this.props.images.length === 0) {
-    //   toast.warn('No images with such query');
-    //   this.setState({ query: '' });
-    //   return;
-    // }
+    if (this.props.total === 0) {
+      toast.warn('No images with such query');
+      this.setState({ query: '' });
+      return;
+    }
 
     this.props.onChange(this.state.query);
     this.setState({ query: '' });

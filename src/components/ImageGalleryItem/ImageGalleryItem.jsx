@@ -2,7 +2,7 @@ import React from 'react';
 import s from './ImageGalleryItem.module.css';
 import PropTypes from 'prop-types';
 
-const ImageGalleryItem = ({ url, alt, largeUrl }) => {
+const ImageGalleryItem = ({ url, alt, largeUrl, onOpenModal }) => {
   return (
     <li className={s.ImageGalleryItem}>
       <img
@@ -11,6 +11,7 @@ const ImageGalleryItem = ({ url, alt, largeUrl }) => {
         alt={alt}
         data-url={largeUrl}
         width="300"
+        onClick={onOpenModal}
       />
     </li>
   );
