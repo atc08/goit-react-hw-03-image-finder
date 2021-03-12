@@ -16,7 +16,7 @@ class App extends Component {
     isLoading: false,
     largeUrl: '',
     error: null,
-    total: '',
+    total: null,
   };
 
   componentDidMount() {
@@ -24,8 +24,14 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchQuery !== this.state.searchQuery) {
+    const { searchQuery, total } = this.state;
+    if (prevState.searchQuery !== searchQuery) {
       this.fetchImages();
+    }
+    if (total === 0) {
+      toast.warn('No images with such query');
+      this.setState({ query: '' });
+      this.setState({ total: null });
     }
   }
 
@@ -40,19 +46,14 @@ class App extends Component {
     this.setState({ isLoading: true });
 
     fetchImagesApi(options)
-      .then((hits, total) => {
+      .then(({ hits, total }) => {
         this.setState(prevState => ({
           images: [...prevState.images, ...hits],
           page: prevState.page + 1,
           total: total,
         }));
         this.handleScroll();
-        console.log(total);
       })
-      // .then(total => {
-      //   this.setState({ total: total });
-      //   console.log(total);
-      // })
       .finally(() => this.setState({ isLoading: false }));
   };
 
@@ -60,9 +61,13 @@ class App extends Component {
     const { page } = this.state;
     if (page > 2) {
       window.scrollTo({
-        top: document.documentElement.scrollHeight,
+        top:
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight,
         behavior: 'smooth',
       });
+      console.log(document.documentElement.scrollHeight);
+      console.log(document.documentElement.clientHeight);
     }
   };
 
@@ -75,15 +80,20 @@ class App extends Component {
     this.setState({ largeUrl: '' });
   };
 
+  handleError = () => {
+    toast.error('Something wrong( Please try again');
+  };
+
   render() {
-    const { images, isLoading, searchQuery, largeUrl, total } = this.state;
+    const { images, isLoading, searchQuery, largeUrl, error } = this.state;
 
     return (
       <div className="App">
-        <SearchBar onChange={this.onChangeQuery} total={total} />
+        {error && this.handleError}
+        <SearchBar onChange={this.onChangeQuery} />
         <ImageGallery images={images} onOpenModal={this.handleOpenModal} />
         {isLoading && <Loader searchQuery={searchQuery} />}
-        {images.length > 0 && !isLoading && (
+        {images.length >= 12 && !isLoading && (
           <LoadMoreButton onClick={this.fetchImages} />
         )}
         {largeUrl && (
