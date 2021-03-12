@@ -60,14 +60,11 @@ class App extends Component {
   handleScroll = () => {
     const { page } = this.state;
     if (page > 2) {
-      window.scrollTo({
-        top:
-          document.documentElement.scrollHeight -
-          document.documentElement.clientHeight,
+      const scrollPage = window.innerHeight - 160;
+      window.scrollBy({
+        top: scrollPage,
         behavior: 'smooth',
       });
-      console.log(document.documentElement.scrollHeight);
-      console.log(document.documentElement.clientHeight);
     }
   };
 
